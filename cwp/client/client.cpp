@@ -1,3 +1,4 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include<WINSOCK2.H>
 #include<STDIO.H>
 #include<iostream>
