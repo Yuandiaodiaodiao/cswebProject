@@ -5,7 +5,7 @@ using namespace std;
  
 int main()
 {
-	SocketClient client("101.76.243.181");
+	SocketClient client("127.0.0.1");
 	while (true) {
 		string s;
 		cin >> s;

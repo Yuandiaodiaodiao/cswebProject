@@ -1,93 +1,146 @@
 ﻿#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include<iostream>
 #include"SocketServer.h"
+#include<cstring>
 #include<string>
+#include<vector>
+#include<ctime>
+#include<map>
 using namespace std;
-
-
-int main(int argc, char* argv[])
+string opt[5] = {"login", "logout", "send" ,"getmsg","getonline"};
+/*
+	login logout send getmessage getonline
+	login$username space
+	logout$username space
+	send$from$to$msg space
+	getmsg$username from$msg$from$msg$
+	getonline$usename username$username...$
+*/
+struct account
 {
-
-	SocketServer server;
-	while (true) {
-		SOCKET id = server.accepts();
-		string s = server.receives(id);
-		cout << s << endl;
-		server.sends(id,"??你发你🐎呢?");
-		server.closes(id);
-	}
-
-
-
-
-	/*
-	//初始化WSA  
-	WORD sockVersion = MAKEWORD(2, 2);
-	WSADATA wsaData;
-	if (WSAStartup(sockVersion, &wsaData) != 0)
-	{
-		return 0;
-	}
-
-	//创建套接字  
-	SOCKET slisten = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (slisten == INVALID_SOCKET)
-	{
-		printf("socket error !");
-		return 0;
-	}
-
-	//绑定IP和端口  
-	sockaddr_in sin;
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(8888);
-	sin.sin_addr.S_un.S_addr = INADDR_ANY;
-	if (bind(slisten, (LPSOCKADDR)& sin, sizeof(sin)) == SOCKET_ERROR)
-	{
-		printf("bind error !");
-	}
-
-	//开始监听  
-	if (listen(slisten, 5) == SOCKET_ERROR)
-	{
-		printf("listen error !");
-		return 0;
-	}
-
-	//循环接收数据  
-	SOCKET sClient;
-	sockaddr_in remoteAddr;
-	int nAddrlen = sizeof(remoteAddr);
-	char revData[255];
-	while (true)
-	{
-		printf("等待连接...\n");
-		sClient = accept(slisten, (SOCKADDR*)& remoteAddr, &nAddrlen);
-		if (sClient == INVALID_SOCKET)
+	bool isLog;
+	int lastTime;
+};
+map < string ,account > onlineList;
+struct Msg
+{
+	string from,to,msg;
+};
+vector < Msg > msgList;
+int find$(string s,int pos)
+{
+	int ans = -1;
+	for(int i = pos ; i < s.length() ; i ++)
+		if(s[i] == '$')
 		{
-			printf("accept error !");
-			continue;
+			ans = i;
+			break;
 		}
-		printf("接受到一个连接：%s \r\n", inet_ntoa(remoteAddr.sin_addr));
-		cout << endl;
-		//接收数据  
-
-		int ret = 0;
-
-		while (ret = recv(sClient, revData, 255, 0)) {
-			if (revData[0] == '-')break;
-			revData[ret] = 0x00;
-			cout << revData << endl;
-			//1224723200  
+	return ans;
+}
+int check(string req)
+{
+	int pos = find$(req,0);
+	string ins = req.substr(0,pos);
+	cout << "#" << ins << endl;
+	for(int i = 0 ; i < 5 ; i ++)
+		if(ins == opt[i])
+			return i;
+	return -1;
+}
+void solve()
+{
+	SocketServer server;
+	SOCKET id = server.accepts();
+	string req = server.receives(id);
+	int inst = check(req);
+	printf("#%d\n",inst);
+	if(inst == 0)//login
+	{
+		int pos = find$(req,0);
+		string username = req.substr(pos+1,req.length()-pos-1);
+		if(onlineList[username].isLog == true)
+			server.sends(id,"Failed: already logged in");
+		else
+		{
+			onlineList[username].isLog = true;
+			server.sends(id,"login success");
+			puts("login success");
 		}
-		//发送数据  
-		const char* sendData = "你好，TCP客户端！\n";
-		send(sClient, sendData, strlen(sendData), 0);
-		closesocket(sClient);
+		return ;
 	}
-
-	closesocket(slisten);
-	WSACleanup();
-	*/
+	else if(inst == 1)//logout
+	{
+		int pos = find$(req,0);
+		string username = req.substr(pos+1,req.length()-pos-1);
+		cout << "#" << username << endl;
+		if(onlineList[username].isLog == false)
+			server.sends(id,"Failed: user not online");
+		else
+		{
+			onlineList[username].isLog = false;
+			server.sends(id,"logout success");
+		}
+		return ;
+	}
+	else if(inst == 2)//send
+	{
+		int pos = find$(req,0);
+		int pos_ = find$(req,pos+1);
+		int pos__ = find$(req,pos_+1);
+		string from = req.substr(pos+1,pos_-pos-1);
+		string to = req.substr(pos_+1,pos__-pos_-1);
+		string msg = req.substr(pos__+1,req.length()-pos__-1);
+		cout << "#" << from << " " << to << " " << msg << endl;
+		Msg newmsg;
+		newmsg.from = from;
+		newmsg.to = to;
+		newmsg.msg = msg;
+		server.sends(id,"send success");
+		msgList.push_back(newmsg);
+	}
+	else if(inst == 3)//getmsg
+	{
+		int pos = find$(req,0);
+		string username = req.substr(pos+1,req.length()-pos-1);
+		vector < Msg > ::iterator it;
+		string res = "$";
+		
+		for(it = msgList.begin() ; it != msgList.end() ;)
+		{
+			if((*it).to == username)
+			{
+				it = msgList.erase(it);
+				res += (*it).from + "$" + (*it).msg + "$";
+			}
+			else
+			{
+				++ it;
+			}
+		}
+		cout << "#" << res << endl;
+		server.sends(id,res);
+	}
+	else if(inst == 4)//getonline
+	{
+		int pos = find$(req,0);
+		string username = req.substr(pos+1,req.length()-pos-1);
+		string res = "$";
+		map < string ,account > :: iterator it;
+		for(it = onlineList.begin() ; it != onlineList.end() ; ++ it)
+		{
+			if((it -> second).isLog == true && (it -> first) != username)
+				res += it -> first + "$";
+		}
+		cout << "#" << res << endl;
+		server.sends(id,res);
+	}
+	server.closes(id);
+	return ;
+}
+int main()
+{
+	while(true)
+		solve();
 	return 0;
 }
