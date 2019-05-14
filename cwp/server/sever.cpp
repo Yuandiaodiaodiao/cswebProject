@@ -1,11 +1,26 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include <stdio.h>  
-#include <winsock2.h>  
 #include<iostream>
-#pragma comment(lib,"ws2_32.lib")  
+#include"SocketServer.h"
+#include<string>
 using namespace std;
+
+
 int main(int argc, char* argv[])
 {
+
+	SocketServer server;
+	while (true) {
+		SOCKET id = server.accepts();
+		string s = server.receives(id);
+		cout << s << endl;
+		server.sends(id," ");
+		server.closes(id);
+	}
+
+
+
+
+	/*
 	//³õÊ¼»¯WSA  
 	WORD sockVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
@@ -73,5 +88,6 @@ int main(int argc, char* argv[])
 
 	closesocket(slisten);
 	WSACleanup();
+	*/
 	return 0;
 }

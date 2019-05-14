@@ -1,13 +1,17 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include<WINSOCK2.H>
-#include<STDIO.H>
 #include<iostream>
 #include<cstring>
+#include"SocketClient.h"
 using namespace std;
-#pragma comment(lib, "ws2_32.lib")
  
 int main()
 {
+	SocketClient client("101.76.243.181");
+	while (true) {
+		string s;
+		cin >> s;
+		client.autosends(s);
+	}
+	/*
 	WORD sockVersion = MAKEWORD(2, 2);
 	WSADATA data;
 	if(WSAStartup(sockVersion, &data)!=0)
@@ -57,7 +61,8 @@ int main()
 	
 	
 	WSACleanup();
+	*/
 	return 0;
 	
-}//https://blog.csdn.net/xiaoquantouer/article/details/58001960
+}
  
