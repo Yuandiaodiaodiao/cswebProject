@@ -1,10 +1,10 @@
 #pragma once
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <stdio.h>  
-#include <winsock2.h>  
 #include<iostream>
 #include<string>
-#pragma comment(lib,"ws2_32.lib")  
+#pragma comment(lib,"ws2_32.lib") 
+#include <winsock2.h>  
 using namespace std;
 
 class SocketServer {
@@ -25,7 +25,7 @@ public:
 		//°ó¶¨IPºÍ¶Ë¿Ú  
 		sockaddr_in sin;
 		sin.sin_family = AF_INET;
-		sin.sin_port = htons(8888);
+		sin.sin_port = htons(6666);
 		sin.sin_addr.S_un.S_addr = INADDR_ANY;
 		if (bind(slisten, (LPSOCKADDR)& sin, sizeof(sin)) == SOCKET_ERROR)
 		{
