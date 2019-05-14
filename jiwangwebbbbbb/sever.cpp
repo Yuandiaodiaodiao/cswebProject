@@ -1,6 +1,6 @@
-#include <stdio.h>  
+#include <cstdio>  
 #include <winsock2.h>  
-  #include<iostream>
+#include<iostream>
 #pragma comment(lib,"ws2_32.lib")  
   using namespace std;
 int main(int argc, char* argv[])  
