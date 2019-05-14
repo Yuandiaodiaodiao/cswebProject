@@ -31,7 +31,7 @@ public:
 			throw("invalid socket!");
 		}
 		serAddr.sin_family = AF_INET;
-		serAddr.sin_port = htons(8888);
+		serAddr.sin_port = htons(6666);
 		serAddr.sin_addr.S_un.S_addr = inet_addr(ip.c_str());
 
 		if (connect(sclient, (sockaddr*)& serAddr, sizeof(serAddr)) == SOCKET_ERROR)

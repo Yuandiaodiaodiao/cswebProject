@@ -1,4 +1,4 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
+ï»¿#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include<iostream>
 #include"SocketServer.h"
 #include<string>
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 		SOCKET id = server.accepts();
 		string s = server.receives(id);
 		cout << s << endl;
-		server.sends(id," ");
+		server.sends(id,"??ä½ å‘ä½ ðŸŽå‘¢?");
 		server.closes(id);
 	}
 
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
 
 	/*
-	//³õÊ¼»¯WSA  
+	//åˆå§‹åŒ–WSA  
 	WORD sockVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
 	if (WSAStartup(sockVersion, &wsaData) != 0)
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	//´´½¨Ì×½Ó×Ö  
+	//åˆ›å»ºå¥—æŽ¥å­—  
 	SOCKET slisten = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (slisten == INVALID_SOCKET)
 	{
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	//°ó¶¨IPºÍ¶Ë¿Ú  
+	//ç»‘å®šIPå’Œç«¯å£  
 	sockaddr_in sin;
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(8888);
@@ -47,30 +47,30 @@ int main(int argc, char* argv[])
 		printf("bind error !");
 	}
 
-	//¿ªÊ¼¼àÌý  
+	//å¼€å§‹ç›‘å¬  
 	if (listen(slisten, 5) == SOCKET_ERROR)
 	{
 		printf("listen error !");
 		return 0;
 	}
 
-	//Ñ­»·½ÓÊÕÊý¾Ý  
+	//å¾ªçŽ¯æŽ¥æ”¶æ•°æ®  
 	SOCKET sClient;
 	sockaddr_in remoteAddr;
 	int nAddrlen = sizeof(remoteAddr);
 	char revData[255];
 	while (true)
 	{
-		printf("µÈ´ýÁ¬½Ó...\n");
+		printf("ç­‰å¾…è¿žæŽ¥...\n");
 		sClient = accept(slisten, (SOCKADDR*)& remoteAddr, &nAddrlen);
 		if (sClient == INVALID_SOCKET)
 		{
 			printf("accept error !");
 			continue;
 		}
-		printf("½ÓÊÜµ½Ò»¸öÁ¬½Ó£º%s \r\n", inet_ntoa(remoteAddr.sin_addr));
+		printf("æŽ¥å—åˆ°ä¸€ä¸ªè¿žæŽ¥ï¼š%s \r\n", inet_ntoa(remoteAddr.sin_addr));
 		cout << endl;
-		//½ÓÊÕÊý¾Ý  
+		//æŽ¥æ”¶æ•°æ®  
 
 		int ret = 0;
 
@@ -80,8 +80,8 @@ int main(int argc, char* argv[])
 			cout << revData << endl;
 			//1224723200  
 		}
-		//·¢ËÍÊý¾Ý  
-		const char* sendData = "ÄãºÃ£¬TCP¿Í»§¶Ë£¡\n";
+		//å‘é€æ•°æ®  
+		const char* sendData = "ä½ å¥½ï¼ŒTCPå®¢æˆ·ç«¯ï¼\n";
 		send(sClient, sendData, strlen(sendData), 0);
 		closesocket(sClient);
 	}

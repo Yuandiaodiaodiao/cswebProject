@@ -25,7 +25,7 @@ public:
 		//°ó¶¨IPºÍ¶Ë¿Ú  
 		sockaddr_in sin;
 		sin.sin_family = AF_INET;
-		sin.sin_port = htons(8888);
+		sin.sin_port = htons(6666);
 		sin.sin_addr.S_un.S_addr = INADDR_ANY;
 		if (bind(slisten, (LPSOCKADDR)& sin, sizeof(sin)) == SOCKET_ERROR)
 		{
