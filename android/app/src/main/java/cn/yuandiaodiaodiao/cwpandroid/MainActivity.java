@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 String s = "";
                 String buffs;
                 while ((buffs = reader.readLine()) != null) {
-                    s += buffs + "/n";
+                    s += buffs + "\n";
                 }
                 msg.obj = s;
 
