@@ -110,7 +110,7 @@ void solve()
 		{
 			if((*it).to == username)
 			{
-				res += (*it).from + "$" + (*it).msg + "$";
+				res += (*it).from + "$" + (*it).msg + "\n";
 				it = msgList.erase(it);
 			}
 			else
