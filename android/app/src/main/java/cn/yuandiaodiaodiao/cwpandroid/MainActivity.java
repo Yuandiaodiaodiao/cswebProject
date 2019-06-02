@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             try {// 创建一个Socket对象，并指定服务端的IP及端口号
                 //101.76.243.181
                 //101.76.251.152
-                socket = new Socket(ip, 6666);
+                socket = new Socket(ip, 12347);
                 String socketData = this.op;
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                         socket.getOutputStream(),"GBK"));
